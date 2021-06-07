@@ -39,5 +39,4 @@ class UserClassController(
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     fun createClass(@RequestBody userClassCreate: UserClassCreate) = userClassService.createClass(userClassCreate)
-
 }

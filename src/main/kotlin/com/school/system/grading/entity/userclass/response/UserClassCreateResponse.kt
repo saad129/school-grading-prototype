@@ -6,7 +6,6 @@ package com.school.system.grading.entity.userclass.response
  * Date: 6/7/21
  **/
 class UserClassCreateResponse(
-        val userId: Int?,
-        val classId: Int?,
-        val className: String?
+        val id: Int?,
+        val className: String
 )
