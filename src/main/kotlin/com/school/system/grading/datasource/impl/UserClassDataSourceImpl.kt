@@ -40,12 +40,13 @@ class UserClassDataSourceImpl(
         return if (result.isNotEmpty()) {
             val userEntity = result.first()
             if(userEntity.role == UserRoles.ADMIN.role) {
-                entityManager.merge(userClassCreate.mapToUserClassEntity())
+                val userCreate = userClassCreate.mapToUserClassEntity()
+                entityManager.persist(userCreate)
                 val location = URI.create(String.format("/class/%s", userClassCreate.className))
                 ResponseEntity.created(location).body(Response(
                         status = CREATED,
                         message = "Class is created",
-                        data = userEntity.mapToUserClassResponse()
+                        data = userCreate.mapToUserClassResponse()
                 ))
             } else {
                 ResponseEntity.ok().body(Response(

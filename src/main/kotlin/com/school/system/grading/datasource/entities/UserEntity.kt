@@ -16,7 +16,4 @@ data class UserEntity(
         var password: String,
         var role: Int,
         var expiredAt: Long? = null,
-        @OneToOne(cascade = [CascadeType.ALL])
-        @JoinColumn(name = "class_id",referencedColumnName = "id",nullable = true)
-        var userClass: UserClassEntity?= null
 ): BaseEntity()

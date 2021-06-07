@@ -18,10 +18,9 @@ fun UserClassCreate.mapToUserClassEntity(): UserClassEntity {
     )
 }
 
-fun UserEntity.mapToUserClassResponse(): UserClassCreateResponse {
+fun UserClassEntity.mapToUserClassResponse(): UserClassCreateResponse {
     return UserClassCreateResponse(
-            userId = this.id,
-            classId = this.userClass?.id,
-            className = this.userClass?.name
+            id = this.id,
+            className = this.name
     )
 }
