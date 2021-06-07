@@ -1,6 +1,5 @@
 package com.school.system.grading.datasource.entities
 
-import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
@@ -16,5 +15,8 @@ data class UserEntity(
         var username: String,
         var password: String,
         var role: Int,
-        var expiredAt: Long? = null
+        var expiredAt: Long? = null,
+        @OneToOne(cascade = [CascadeType.ALL])
+        @JoinColumn(name = "class_id",referencedColumnName = "id",nullable = true)
+        var userClass: UserClassEntity?= null
 ): BaseEntity()

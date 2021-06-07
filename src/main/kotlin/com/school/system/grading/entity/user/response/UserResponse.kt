@@ -6,5 +6,5 @@ class UserResponse(
         val lastName:String,
         val token: String?,
         val username: String,
-        val role: Int
+        val role: String
 )

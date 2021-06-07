@@ -6,5 +6,5 @@ data class Users(
         var lastName:String?= null,
         var username: String?= null,
         var password: String?= null,
-        var role: Int?= null
+        var role: String? = null
 )
