@@ -5,6 +5,7 @@ import com.school.system.grading.datasource.mapper.mapToUserEntity
 import com.school.system.grading.datasource.mapper.mapToUserResponse
 import com.school.system.grading.entity.*
 import com.school.system.grading.datasource.entities.UserEntity
+import com.school.system.grading.datasource.entities.UserEntity_
 import com.school.system.grading.datasource.extensions.withCriteriaBuilder
 import com.school.system.grading.entity.user.request.UserLogin
 import com.school.system.grading.entity.user.request.UserUpdate
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Repository
+import java.net.URI
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 import javax.transaction.Transactional
@@ -46,18 +48,38 @@ class UserDataSourceImpl(
         }
     }
 
+    override fun findById(id: Int): ResponseEntity<Response<UserResponse>> {
+        val result = entityManager.withCriteriaBuilder<UserEntity> { builder, query, root ->
+            query.select(root).where(builder.equal(root.get<Int>(UserEntity_.id), id))
+        }.resultList
+
+        return if(result.isNotEmpty()) {
+            ResponseEntity.ok(Response(
+                    status = SUCCESS,
+                    message = "Users found",
+                    data = result.first().mapToUserResponse()
+            ))
+        } else {
+            ResponseEntity.ok(Response(
+                    status = USER_NOT_FOUND,
+                    message = "No users created "
+            ))
+        }
+    }
+
 
     @Transactional
     override fun insert(users: Users): ResponseEntity<Response<UserResponse>> {
         val userEntity = users.mapToUserEntity(passwordEncoder.encode(users.password))
 
         val result = entityManager.withCriteriaBuilder<UserEntity> { builder, query, root ->
-            query.select(root).where(builder.equal(root.get<String>("username"), userEntity.username))
+            query.select(root).where(builder.equal(root.get<String>(UserEntity_.USERNAME), userEntity.username.toLowerCase()))
         }.resultList
 
         return if (result.isEmpty()) {
             entityManager.persist(userEntity)
-            ResponseEntity.ok(Response(
+            val location = URI.create(java.lang.String.format("/user/%s", userEntity.id))
+            ResponseEntity.created(location).body(Response(
                     status = SUCCESS,
                     message = "User created",
                     data = userEntity.mapToUserResponse()
@@ -73,7 +95,7 @@ class UserDataSourceImpl(
     @Transactional
     override fun login(userLogin: UserLogin): ResponseEntity<Response<UserResponse>> {
         val result = entityManager.withCriteriaBuilder<UserEntity> { builder, query, root ->
-            query.select(root).where(builder.equal(root.get<String>("username"), userLogin.username.toLowerCase()))
+            query.select(root).where(builder.equal(root.get<String>(UserEntity_.USERNAME), userLogin.username.toLowerCase()))
         }.resultList
         return result.firstOrNull()?.let {
             if (passwordEncoder.matches(userLogin.password, it.password)) {
@@ -101,7 +123,7 @@ class UserDataSourceImpl(
     @Transactional
     override fun update(userUpdate: UserUpdate): ResponseEntity<Response<UserResponse>> {
         val result = entityManager.withCriteriaBuilder<UserEntity> { builder, query, root ->
-            query.select(root).where(builder.equal(root.get<Int>("id"), userUpdate.id))
+            query.select(root).where(builder.equal(root.get<Int>(UserEntity_.id), userUpdate.id))
         }.resultList
          result.takeIf { it.isNotEmpty() }?.first()?.apply {
             this.firstName = userUpdate.firstName

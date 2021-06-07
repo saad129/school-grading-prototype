@@ -6,6 +6,13 @@ import javax.persistence.criteria.CriteriaBuilder
 import javax.persistence.criteria.CriteriaQuery
 import javax.persistence.criteria.Root
 
+/**
+ * @project Grading
+ * @author Muhammad Saad Bhatti
+ * Date: 6/4/2021
+ */
+
+
 inline fun <reified T> EntityManager.withCriteriaBuilder(block:(builder: CriteriaBuilder, query: CriteriaQuery<T>, root: Root<T>) -> CriteriaQuery<T>): TypedQuery<T> {
     val builder = this.criteriaBuilder
     val criteriaQuery = builder.createQuery(T::class.java)

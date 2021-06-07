@@ -17,6 +17,10 @@ class UserRepositoryImpl(
 
     override fun fetchAllUsers(): ResponseEntity<Response<List<UserResponse>>> = userDataSource.findAll()
 
+    override fun findUserById(id: Int): ResponseEntity<Response<UserResponse>> {
+        return userDataSource.findById(id)
+    }
+
     override fun insertUser(users: Users): ResponseEntity<Response<UserResponse>> = userDataSource.insert(users)
 
     override fun loginUser(userLogin: UserLogin): ResponseEntity<Response<UserResponse>> = userDataSource.login(userLogin)

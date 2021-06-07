@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity
 interface UserRepository {
     fun fetchAllUsers(): ResponseEntity<Response<List<UserResponse>>>
 
+    fun findUserById(id: Int): ResponseEntity<Response<UserResponse>>
+
     fun insertUser(users: Users): ResponseEntity<Response<UserResponse>>
 
     fun loginUser(userLogin: UserLogin): ResponseEntity<Response<UserResponse>>

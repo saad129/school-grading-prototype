@@ -17,9 +17,12 @@ class UserService(
 
     fun getAllUsers(): ResponseEntity<Response<List<UserResponse>>> = userRepository.fetchAllUsers()
 
+    fun getUserById(id: Int): ResponseEntity<Response<UserResponse>> = userRepository.findUserById(id)
+
+
     fun createUser(users: Users): ResponseEntity<Response<UserResponse>> {
         return if (users.firstName.isNullOrEmpty() || users.lastName.isNullOrEmpty() || users.password.isNullOrEmpty()
-                || users.role == null || users.username.isNullOrEmpty()) {
+                || users.role.isNullOrEmpty() || users.username.isNullOrEmpty()) {
             ResponseEntity.ok(Response(
                     status = FIELD_MISSING,
                     message = "Fields are missing")

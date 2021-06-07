@@ -1,5 +1,6 @@
 package com.school.system.grading.controller
 
+import com.school.system.grading.controller.base.BaseController
 import com.school.system.grading.entity.Response
 import com.school.system.grading.entity.SUCCESS
 import com.school.system.grading.entity.user.request.UserLogin
@@ -13,21 +14,10 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("api/user")
+@RequestMapping("api/v1/users")
 class UserController(
         private val userService: UserService
-) {
-
-    @ExceptionHandler(NoSuchElementException::class)
-    fun handleNotFound(e: NoSuchElementException): ResponseEntity<String> =
-            ResponseEntity(e.message, HttpStatus.NOT_FOUND)
-
-    @ExceptionHandler(IllegalArgumentException::class)
-    fun handleBadRequest(e: IllegalArgumentException): ResponseEntity<String> =
-            ResponseEntity(e.message, HttpStatus.BAD_REQUEST)
-
-    @GetMapping
-    fun helloUser(): String = "Hello, this is user REST endpoint!"
+):BaseController() {
 
     @GetMapping("/dummy")
     fun helloTest(): ResponseEntity<Response<List<String>>> = ResponseEntity.ok(Response(
@@ -50,10 +40,16 @@ class UserController(
     fun loginUser(@RequestBody userLogin: UserLogin): ResponseEntity<Response<UserResponse>> = userService.loginUser(userLogin)
 
 
-    @GetMapping("/getAllUsers", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     fun getAllUsers(): ResponseEntity<Response<List<UserResponse>>> = userService.getAllUsers()
+
+
+    @GetMapping( "/{id}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    fun getUserById(@PathVariable id:Int) = userService.getUserById(id)
 
 
     @PutMapping("/update",consumes = [MediaType.APPLICATION_JSON_VALUE],
@@ -61,6 +57,7 @@ class UserController(
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     fun updateUser(@RequestBody userUpdate: UserUpdate): ResponseEntity<Response<UserResponse>> = userService.updateUser(userUpdate)
+
 
 
 }
