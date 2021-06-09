@@ -30,33 +30,33 @@ class UserController(
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    fun createUser(@RequestBody users: Users): ResponseEntity<Response<UserResponse>> = userService.createUser(users)
+    suspend fun createUser(@RequestBody users: Users): ResponseEntity<Response<UserResponse>> = userService.createUser(users)
 
 
     @PostMapping("/login",consumes = [MediaType.APPLICATION_JSON_VALUE],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    fun loginUser(@RequestBody userLogin: UserLogin): ResponseEntity<Response<UserResponse>> = userService.loginUser(userLogin)
+    suspend fun loginUser(@RequestBody userLogin: UserLogin): ResponseEntity<Response<UserResponse>> = userService.loginUser(userLogin)
 
 
     @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    fun getAllUsers(): ResponseEntity<Response<List<UserResponse>>> = userService.getAllUsers()
+    suspend fun getAllUsers(): ResponseEntity<Response<List<UserResponse>>> = userService.getAllUsers()
 
 
     @GetMapping( "/{id}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    fun getUserById(@PathVariable id:Int) = userService.getUserById(id)
+    suspend fun getUserById(@PathVariable id:Int) = userService.getUserById(id)
 
 
     @PutMapping("/update",consumes = [MediaType.APPLICATION_JSON_VALUE],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    fun updateUser(@RequestBody userUpdate: UserUpdate): ResponseEntity<Response<UserResponse>> = userService.updateUser(userUpdate)
+    suspend fun updateUser(@RequestBody userUpdate: UserUpdate): ResponseEntity<Response<UserResponse>> = userService.updateUser(userUpdate)
 
 
 

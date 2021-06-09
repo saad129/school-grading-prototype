@@ -16,4 +16,10 @@ data class UserEntity(
         var password: String,
         var role: Int,
         var expiredAt: Long? = null,
+        @OneToMany(cascade = [CascadeType.ALL],fetch = FetchType.LAZY)
+        @JoinColumn(name = "class_teacher_id",referencedColumnName = "id")
+        var userClassEntity: Set<UserClassEntity>? = null,
+        @OneToMany(cascade = [CascadeType.ALL],fetch = FetchType.LAZY)
+        @JoinColumn(name = "subject_teacher_id",referencedColumnName = "id")
+        var userSubjectEntity: Set<UserSubjectEntity>? = null
 ): BaseEntity()

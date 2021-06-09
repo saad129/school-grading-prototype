@@ -15,17 +15,17 @@ class UserRepositoryImpl(
         private val userDataSource: UserDataSource
 ): UserRepository {
 
-    override fun fetchAllUsers(): ResponseEntity<Response<List<UserResponse>>> = userDataSource.findAll()
+    override suspend fun fetchAllUsers(): ResponseEntity<Response<List<UserResponse>>> = userDataSource.findAll()
 
-    override fun findUserById(id: Int): ResponseEntity<Response<UserResponse>> {
+    override suspend fun findUserById(id: Int): ResponseEntity<Response<UserResponse>> {
         return userDataSource.findById(id)
     }
 
-    override fun insertUser(users: Users): ResponseEntity<Response<UserResponse>> = userDataSource.insert(users)
+    override suspend fun insertUser(users: Users): ResponseEntity<Response<UserResponse>> = userDataSource.insert(users)
 
-    override fun loginUser(userLogin: UserLogin): ResponseEntity<Response<UserResponse>> = userDataSource.login(userLogin)
+    override suspend fun loginUser(userLogin: UserLogin): ResponseEntity<Response<UserResponse>> = userDataSource.login(userLogin)
 
-    override fun updateUser(userUpdate: UserUpdate): ResponseEntity<Response<UserResponse>> {
+    override suspend fun updateUser(userUpdate: UserUpdate): ResponseEntity<Response<UserResponse>> {
         return userDataSource.update(userUpdate)
     }
 

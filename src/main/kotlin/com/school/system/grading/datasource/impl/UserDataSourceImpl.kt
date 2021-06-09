@@ -2,7 +2,7 @@ package com.school.system.grading.datasource.impl
 
 import com.school.system.grading.datasource.UserDataSource
 import com.school.system.grading.datasource.mapper.mapToUserEntity
-import com.school.system.grading.datasource.mapper.mapToUserResponse
+import com.school.system.grading.datasource.mapper.mapToUserSubjectResponse
 import com.school.system.grading.entity.*
 import com.school.system.grading.datasource.entities.UserEntity
 import com.school.system.grading.datasource.entities.UserEntity_
@@ -12,6 +12,12 @@ import com.school.system.grading.entity.user.request.UserUpdate
 import com.school.system.grading.entity.user.request.Users
 import com.school.system.grading.entity.user.response.UserResponse
 import com.school.system.grading.extensions.generateNewToken
+import com.school.system.grading.extensions.replaceSpaceWithDot
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.withContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -20,6 +26,7 @@ import java.net.URI
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 import javax.transaction.Transactional
+import kotlin.coroutines.suspendCoroutine
 
 @Repository
 class UserDataSourceImpl(
@@ -29,7 +36,7 @@ class UserDataSourceImpl(
         private val passwordEncoder: PasswordEncoder
 ) : UserDataSource {
 
-    override fun findAll(): ResponseEntity<Response<List<UserResponse>>> {
+    override suspend fun findAll(): ResponseEntity<Response<List<UserResponse>>> {
         val result = entityManager.withCriteriaBuilder<UserEntity> { builder, query, root ->
             query.select(root)
         }.resultList
@@ -38,7 +45,7 @@ class UserDataSourceImpl(
             ResponseEntity.ok(Response(
                     status = SUCCESS,
                     message = "Users found",
-                    data = result.mapToUserResponse()
+                    data = result.mapToUserSubjectResponse()
             ))
         } else {
             ResponseEntity.ok(Response(
@@ -48,28 +55,23 @@ class UserDataSourceImpl(
         }
     }
 
-    override fun findById(id: Int): ResponseEntity<Response<UserResponse>> {
-        val result = entityManager.withCriteriaBuilder<UserEntity> { builder, query, root ->
-            query.select(root).where(builder.equal(root.get<Int>(UserEntity_.id), id))
-        }.resultList
+    override suspend fun findById(id: Int): ResponseEntity<Response<UserResponse>> {
+        val result = entityManager.find(UserEntity::class.java,id) ?:
+                return ResponseEntity.ok(Response(
+                        status = USER_NOT_FOUND,
+                        message = "No users created "
+                ))
 
-        return if(result.isNotEmpty()) {
-            ResponseEntity.ok(Response(
+            return ResponseEntity.ok(Response(
                     status = SUCCESS,
                     message = "Users found",
-                    data = result.first().mapToUserResponse()
+                    data = result.mapToUserSubjectResponse()
             ))
-        } else {
-            ResponseEntity.ok(Response(
-                    status = USER_NOT_FOUND,
-                    message = "No users created "
-            ))
-        }
     }
 
 
     @Transactional
-    override fun insert(users: Users): ResponseEntity<Response<UserResponse>> {
+    override suspend fun insert(users: Users): ResponseEntity<Response<UserResponse>> {
         val userEntity = users.mapToUserEntity(passwordEncoder.encode(users.password))
 
         val result = entityManager.withCriteriaBuilder<UserEntity> { builder, query, root ->
@@ -82,7 +84,7 @@ class UserDataSourceImpl(
             ResponseEntity.created(location).body(Response(
                     status = SUCCESS,
                     message = "User created",
-                    data = userEntity.mapToUserResponse()
+                    data = userEntity.mapToUserSubjectResponse()
             ))
         } else {
             ResponseEntity.ok(Response(
@@ -93,7 +95,7 @@ class UserDataSourceImpl(
     }
 
     @Transactional
-    override fun login(userLogin: UserLogin): ResponseEntity<Response<UserResponse>> {
+    override suspend fun login(userLogin: UserLogin): ResponseEntity<Response<UserResponse>> {
         val result = entityManager.withCriteriaBuilder<UserEntity> { builder, query, root ->
             query.select(root).where(builder.equal(root.get<String>(UserEntity_.USERNAME), userLogin.username.toLowerCase()))
         }.resultList
@@ -104,7 +106,7 @@ class UserDataSourceImpl(
                 ResponseEntity.ok(Response(
                         status = SUCCESS,
                         message = "Login success",
-                        data = it.mapToUserResponse()
+                        data = it.mapToUserSubjectResponse()
                 ))
             } else {
                 ResponseEntity.ok(Response(
@@ -121,32 +123,25 @@ class UserDataSourceImpl(
     }
 
     @Transactional
-    override fun update(userUpdate: UserUpdate): ResponseEntity<Response<UserResponse>> {
-        val result = entityManager.withCriteriaBuilder<UserEntity> { builder, query, root ->
-            query.select(root).where(builder.equal(root.get<Int>(UserEntity_.id), userUpdate.id))
-        }.resultList
-         result.takeIf { it.isNotEmpty() }?.first()?.apply {
+    override suspend fun update(userUpdate: UserUpdate): ResponseEntity<Response<UserResponse>> {
+        val result = entityManager.find(UserEntity::class.java,userUpdate.id)
+                ?: return ResponseEntity.ok(Response(
+                        status = USER_NOT_FOUND,
+                        message = "User profile unable to update",
+                ))
+
+        val updatedResult = result.apply {
             this.firstName = userUpdate.firstName
             this.lastName = userUpdate.lastName
             this.password = if(!passwordEncoder.matches(userUpdate.password,this.password)) passwordEncoder.encode(userUpdate.password) else this.password
-            this.username = userUpdate.username.replace(" ",".")
-
-            entityManager.merge(this)
-            return ResponseEntity.ok(Response(
-                    status = SUCCESS,
-                    message = "User profile updated",
-                    data = this.mapToUserResponse()
-            ))
-        } ?:run {
-            return ResponseEntity.ok(Response(
-                    status = USER_NOT_FOUND,
-                    message = "User profile unable to update",
-            ))
+            this.username = userUpdate.username.replaceSpaceWithDot()
         }
 
+        entityManager.merge(updatedResult)
         return ResponseEntity.ok(Response(
-                status = USER_NOT_FOUND,
-                message = "User profile unable to update",
+                status = SUCCESS,
+                message = "User profile updated",
+                data = updatedResult.mapToUserSubjectResponse()
         ))
     }
 

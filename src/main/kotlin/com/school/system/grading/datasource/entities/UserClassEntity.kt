@@ -14,6 +14,9 @@ data class UserClassEntity(
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         var id: Int? = null,
-        @Column(unique=true)
-        var name: String
-)
+        @Column(unique = true)
+        var name: String,
+        @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+        @JoinColumn(name = "class_id",referencedColumnName = "id")
+        var userSubjectEntity: Set<UserSubjectEntity>? = null
+): BaseEntity()

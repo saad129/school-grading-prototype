@@ -33,6 +33,7 @@ dependencies {
 	implementation("io.springfox:springfox-data-rest:3.0.0")
 	implementation("org.springframework.plugin:spring-plugin-core:2.0.0.RELEASE")
 	implementation("org.springdoc:springdoc-openapi-ui:1.5.2")
+	implementation("org.apache.commons:commons-text:1.9")
 	implementation("org.hibernate:hibernate-jpamodelgen:5.3.7.Final")
 	kapt("org.hibernate:hibernate-jpamodelgen:5.3.7.Final")
 	runtimeOnly("org.postgresql:postgresql")

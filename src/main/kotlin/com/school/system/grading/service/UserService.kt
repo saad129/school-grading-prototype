@@ -15,12 +15,12 @@ class UserService(
         private val userRepository: UserRepository
 ) {
 
-    fun getAllUsers(): ResponseEntity<Response<List<UserResponse>>> = userRepository.fetchAllUsers()
+    suspend fun getAllUsers(): ResponseEntity<Response<List<UserResponse>>> = userRepository.fetchAllUsers()
 
-    fun getUserById(id: Int): ResponseEntity<Response<UserResponse>> = userRepository.findUserById(id)
+    suspend fun getUserById(id: Int): ResponseEntity<Response<UserResponse>> = userRepository.findUserById(id)
 
 
-    fun createUser(users: Users): ResponseEntity<Response<UserResponse>> {
+    suspend fun createUser(users: Users): ResponseEntity<Response<UserResponse>> {
         return if (users.firstName.isNullOrEmpty() || users.lastName.isNullOrEmpty() || users.password.isNullOrEmpty()
                 || users.role.isNullOrEmpty() || users.username.isNullOrEmpty()) {
             ResponseEntity.ok(Response(
@@ -32,9 +32,9 @@ class UserService(
         }
     }
 
-    fun loginUser(userLogin: UserLogin): ResponseEntity<Response<UserResponse>> = userRepository.loginUser(userLogin)
+    suspend fun loginUser(userLogin: UserLogin): ResponseEntity<Response<UserResponse>> = userRepository.loginUser(userLogin)
 
-    fun updateUser(userUpdate: UserUpdate): ResponseEntity<Response<UserResponse>> {
+    suspend fun updateUser(userUpdate: UserUpdate): ResponseEntity<Response<UserResponse>> {
         return if(userUpdate.firstName.isEmpty() || userUpdate.lastName.isEmpty() || userUpdate.password.isEmpty() ||
                 userUpdate.username.isEmpty() || userUpdate.id == null) {
             ResponseEntity.ok(Response(
