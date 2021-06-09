@@ -1,7 +1,7 @@
 package com.school.system.grading.repository
 
 import com.school.system.grading.entity.Response
-import com.school.system.grading.entity.userclass.response.UserClassCreateResponse
+import com.school.system.grading.entity.userclass.response.UserClassResponse
 import com.school.system.grading.entity.userclass.request.UserClassCreate
 import org.springframework.http.ResponseEntity
 
@@ -11,5 +11,9 @@ import org.springframework.http.ResponseEntity
  * Date: 6/7/21
  **/
 interface UserClassRepository {
-    fun createClass(userClassCreate: UserClassCreate): ResponseEntity<Response<UserClassCreateResponse>>
+    suspend fun createClass(userClassCreate: UserClassCreate): ResponseEntity<Response<UserClassResponse>>
+
+    suspend fun getAllClasses(): ResponseEntity<Response<List<UserClassResponse>>>
+
+    suspend fun getOneClass(id: Int): ResponseEntity<Response<UserClassResponse>>
 }

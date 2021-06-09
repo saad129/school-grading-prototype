@@ -1,7 +1,7 @@
 package com.school.system.grading.datasource
 
 import com.school.system.grading.entity.Response
-import com.school.system.grading.entity.userclass.response.UserClassCreateResponse
+import com.school.system.grading.entity.userclass.response.UserClassResponse
 import com.school.system.grading.entity.userclass.request.UserClassCreate
 import org.springframework.http.ResponseEntity
 
@@ -11,5 +11,9 @@ import org.springframework.http.ResponseEntity
  * Date: 6/7/21
  **/
 interface UserClassDataSource {
-    fun create(userClassCreate: UserClassCreate): ResponseEntity<Response<UserClassCreateResponse>>
+    suspend fun findAll(): ResponseEntity<Response<List<UserClassResponse>>>
+
+    suspend fun create(userClassCreate: UserClassCreate): ResponseEntity<Response<UserClassResponse>>
+
+    suspend fun findById(id: Int): ResponseEntity<Response<UserClassResponse>>
 }

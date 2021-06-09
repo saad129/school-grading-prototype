@@ -8,14 +8,14 @@ import com.school.system.grading.entity.user.response.UserResponse
 import org.springframework.http.ResponseEntity
 
 interface UserRepository {
-    fun fetchAllUsers(): ResponseEntity<Response<List<UserResponse>>>
+    suspend fun fetchAllUsers(): ResponseEntity<Response<List<UserResponse>>>
 
-    fun findUserById(id: Int): ResponseEntity<Response<UserResponse>>
+    suspend fun findUserById(id: Int): ResponseEntity<Response<UserResponse>>
 
-    fun insertUser(users: Users): ResponseEntity<Response<UserResponse>>
+    suspend fun insertUser(users: Users): ResponseEntity<Response<UserResponse>>
 
-    fun loginUser(userLogin: UserLogin): ResponseEntity<Response<UserResponse>>
+    suspend fun loginUser(userLogin: UserLogin): ResponseEntity<Response<UserResponse>>
 
-    fun updateUser(userUpdate: UserUpdate): ResponseEntity<Response<UserResponse>>
+    suspend fun updateUser(userUpdate: UserUpdate): ResponseEntity<Response<UserResponse>>
 
 }

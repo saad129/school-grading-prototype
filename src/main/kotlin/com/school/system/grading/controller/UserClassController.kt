@@ -31,12 +31,19 @@ class UserClassController(
                 message = "Class already exists"
         ))
     }
-    @GetMapping
-    fun helloClass() = "This is classes api for user"
+    @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    suspend fun getAllClasses() = userClassService.getAllClasses()
+
+    @GetMapping( "/{id}", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    suspend fun getOneClass(@PathVariable id: Int) = userClassService.getOneClass(id)
 
     @PostMapping("/create",  consumes = [MediaType.APPLICATION_JSON_VALUE],
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    fun createClass(@RequestBody userClassCreate: UserClassCreate) = userClassService.createClass(userClassCreate)
+    suspend fun createClass(@RequestBody userClassCreate: UserClassCreate) = userClassService.createClass(userClassCreate)
 }

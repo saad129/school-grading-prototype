@@ -5,7 +5,7 @@ package com.school.system.grading.entity.userclass.response
  * @author Muhammad Saad
  * Date: 6/7/21
  **/
-class UserClassCreateResponse(
+class UserClassResponse(
         val id: Int?,
         val className: String
 )

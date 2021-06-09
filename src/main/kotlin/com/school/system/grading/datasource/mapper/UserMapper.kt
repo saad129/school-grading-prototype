@@ -5,7 +5,7 @@ import com.school.system.grading.entity.user.UserRoles
 import com.school.system.grading.entity.user.request.Users
 import com.school.system.grading.entity.user.response.UserResponse
 
-fun List<UserEntity>.mapToUserResponse(): List<UserResponse> {
+fun List<UserEntity>.mapToUserSubjectResponse(): List<UserResponse> {
     val list = mutableListOf<UserResponse>()
     this.forEach {
         list.add(UserResponse(
@@ -30,7 +30,7 @@ fun Users.mapToUserEntity(encodedPassword: String): UserEntity {
     )
 }
 
-fun UserEntity.mapToUserResponse() : UserResponse {
+fun UserEntity.mapToUserSubjectResponse() : UserResponse {
     return UserResponse(
             id = this.id,
             firstName = this.firstName,
