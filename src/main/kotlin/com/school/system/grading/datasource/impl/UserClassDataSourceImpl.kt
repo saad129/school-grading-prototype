@@ -310,6 +310,7 @@ class UserClassDataSourceImpl(
         ))
     }
 
+    @Transactional
     override suspend fun deAssignClass(userDeAssignRequest: UserDeAssignRequest): ResponseEntity<Response<Unit>> {
         val studentResult = entityManager.find(UserEntity::class.java,userDeAssignRequest.userId)
                 ?: return ResponseEntity.ok().body(Response(
