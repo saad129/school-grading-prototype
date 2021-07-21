@@ -1,9 +1,10 @@
 package com.school.system.grading.controller
 
-import com.school.system.grading.controller.base.BaseController
+import com.school.system.grading.controller.common.BaseController
 import com.school.system.grading.entity.CLASS_ALREADY_EXIST
+import com.school.system.grading.entity.ERROR
 import com.school.system.grading.entity.Response
-import com.school.system.grading.entity.userclass.request.UserClassCreate
+import com.school.system.grading.entity.userclass.request.*
 import com.school.system.grading.service.UserClassService
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
@@ -25,16 +26,26 @@ class UserClassController(
 ): BaseController() {
 
     @ExceptionHandler(DataIntegrityViolationException::class)
-    protected fun handleDataIntegrityException(ex: DataIntegrityViolationException, request: WebRequest) : ResponseEntity<Response<UserClassCreate>>{
+    protected fun handleDataIntegrityException(ex: DataIntegrityViolationException, request: WebRequest) : ResponseEntity<Response<UserClassCreateRequest>>{
         return ResponseEntity.badRequest().body(Response(
-                status = CLASS_ALREADY_EXIST,
-                message = "Class already exists"
+                status = ERROR,
+                message = "Something went wrong"
         ))
     }
     @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     suspend fun getAllClasses() = userClassService.getAllClasses()
+
+    @GetMapping("/valid",produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    suspend fun getAllValidClasses() = userClassService.getAllValidClasses()
+
+    @GetMapping("/count",produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    suspend fun getCountUsers() = userClassService.getClassesCount()
 
     @GetMapping( "/{id}", produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseStatus(HttpStatus.OK)
@@ -45,5 +56,30 @@ class UserClassController(
             produces = [MediaType.APPLICATION_JSON_VALUE])
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    suspend fun createClass(@RequestBody userClassCreate: UserClassCreate) = userClassService.createClass(userClassCreate)
+    suspend fun createClass(@RequestBody userClassCreateRequest: UserClassCreateRequest) = userClassService.createClass(userClassCreateRequest)
+
+    @PutMapping("/update",  consumes = [MediaType.APPLICATION_JSON_VALUE],
+            produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    suspend fun updateClass(@RequestBody userClassUpdateRequest: UserClassUpdateRequest) = userClassService.updateClass(userClassUpdateRequest)
+
+    @PostMapping("/assign",  consumes = [MediaType.APPLICATION_JSON_VALUE],
+            produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    suspend fun assignStudentClass(@RequestBody userAssignClassRequest: UserAssignClassRequest) = userClassService.assignStudentsClass(userAssignClassRequest)
+
+
+    @PostMapping("/deassign",  consumes = [MediaType.APPLICATION_JSON_VALUE],
+            produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    suspend fun deAssignStudentClass(@RequestBody userDeAssignClassRequest: UserDeAssignRequest) = userClassService.deAssignStudentClass(userDeAssignClassRequest)
+
+    @DeleteMapping("/delete",  consumes = [MediaType.APPLICATION_JSON_VALUE],
+            produces = [MediaType.APPLICATION_JSON_VALUE])
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    suspend fun deleteClass(@RequestBody deleteRequest: UserDeleteClassRequest) = userClassService.deleteClass(deleteRequest)
 }

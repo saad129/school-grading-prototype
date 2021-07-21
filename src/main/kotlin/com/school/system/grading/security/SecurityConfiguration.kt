@@ -2,6 +2,8 @@ package com.school.system.grading.security
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.mail.javamail.JavaMailSender
+import org.springframework.mail.javamail.JavaMailSenderImpl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
@@ -9,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
+import java.util.*
 
 
 @Configuration
@@ -31,6 +34,22 @@ class SecurityConfiguration: WebSecurityConfigurerAdapter() {
     override fun configure(http: HttpSecurity?) {
         http?.authorizeRequests()?.antMatchers("/**")?.permitAll()
         http?.csrf()?.disable()
+    }
 
+    @Bean
+    fun getJavaMailSender(): JavaMailSender {
+        val mailSender = JavaMailSenderImpl().apply {
+            host = "smtp.gmail.com"
+            port = 587
+            username = "msaadbhatti776@gmail.com"
+            password = "Hotmail_456"
+            javaMailProperties.also {
+                it.put("mail.transport.protocol", "smtp")
+                it.put("mail.smtp.auth", "true")
+                it.put("mail.smtp.starttls.enable", "true")
+                it.put("mail.debug", "true")
+            }
+        }
+        return mailSender
     }
 }

@@ -1,8 +1,9 @@
 package com.school.system.grading.datasource.mapper
 
 import com.school.system.grading.datasource.entities.UserClassEntity
-import com.school.system.grading.entity.userclass.request.UserClassCreate
+import com.school.system.grading.entity.userclass.request.UserClassCreateRequest
 import com.school.system.grading.entity.userclass.response.UserClassResponse
+import javax.persistence.Tuple
 
 /**
  * @project grading
@@ -11,7 +12,7 @@ import com.school.system.grading.entity.userclass.response.UserClassResponse
  **/
 
 
-fun UserClassCreate.mapToUserClassEntity(): UserClassEntity {
+fun UserClassCreateRequest.mapToUserClassEntity(): UserClassEntity {
     return UserClassEntity(
             name = this.className.toString().toLowerCase().trim()
     )
@@ -30,4 +31,13 @@ fun List<UserClassEntity>.mapToUserClassResponse(): List<UserClassResponse>{
         list.add(it.mapToUserClassResponse())
     }
     return list
+}
+
+fun List<Tuple>.mapTupleToUserClassResponse(): List<UserClassResponse> {
+    val list = mutableListOf<UserClassResponse>()
+    this.forEach {
+        list.add(it.get(0,UserClassEntity::class.java).mapToUserClassResponse())
+    }
+
+    return list.toList()
 }

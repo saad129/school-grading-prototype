@@ -1,4 +1,4 @@
-package com.school.system.grading.datasource.entities
+package com.school.system.grading.datasource.entities.common
 
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
@@ -11,11 +11,11 @@ import javax.persistence.*
 abstract class BaseEntity {
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
-    protected var createdAt: Long? = null
+    var createdAt: Long? = null
 
     @LastModifiedDate
     @Column(name = "updated_at")
-    protected var updatedAt: Long? = null
+    var updatedAt: Long? = null
 
     @PrePersist
     protected fun prePersist() {

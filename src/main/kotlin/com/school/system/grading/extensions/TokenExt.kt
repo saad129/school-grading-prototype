@@ -11,3 +11,6 @@ fun generateNewToken(): String {
     random.nextBytes(randomBytes)
     return base64Encoder.encodeToString(randomBytes)
 }
+
+
+fun Double.round(decimals: Int = 2): Double = "%.${decimals}f".format(this).toDouble()

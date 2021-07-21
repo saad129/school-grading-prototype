@@ -1,4 +1,4 @@
-package com.school.system.grading.controller.base
+package com.school.system.grading.controller.common
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

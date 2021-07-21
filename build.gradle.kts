@@ -35,6 +35,13 @@ dependencies {
 	implementation("org.springdoc:springdoc-openapi-ui:1.5.2")
 	implementation("org.apache.commons:commons-text:1.9")
 	implementation("org.hibernate:hibernate-jpamodelgen:5.3.7.Final")
+	implementation("io.jsonwebtoken:jjwt-api:0.11.2")
+	implementation("com.opencsv:opencsv:4.6")
+	implementation("org.apache.poi:poi:5.0.0")
+	implementation("org.apache.poi:poi-ooxml:5.0.0")
+	implementation("org.springframework.boot:spring-boot-starter-mail:1.2.0.RELEASE")
+	// https://mvnrepository.com/artifact/org.springframework/spring-context-support
+	implementation("org.springframework:spring-context-support:5.3.9")
 	kapt("org.hibernate:hibernate-jpamodelgen:5.3.7.Final")
 	runtimeOnly("org.postgresql:postgresql")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")

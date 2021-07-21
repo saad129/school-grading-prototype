@@ -5,7 +5,12 @@ package com.school.system.grading.entity.subject.response
  * @author Muhammad Saad
  * Date: 6/8/21
  **/
-class UserSubjectResponse(
-        val subjectName: String,
-        val subjectId: Int,
+data class UserSubjectResponse(
+        val id: Int?,
+        val classId: Int?= null,
+        val teacherId: Int?= null,
+        val subjectName: String?,
+        val className: String?= null,
+        val teacherName: String?= null,
+        val hasTest: Boolean?
 )

@@ -1,10 +1,11 @@
 package com.school.system.grading.entity.user.response
 
-class UserResponse(
+data class UserResponse(
         val id: Int?,
         val firstName:String,
         val lastName:String,
-        val token: String?,
+        val password: String,
         val username: String,
-        val role: String
+        val role: String,
+        val isAssigned: Boolean
 )

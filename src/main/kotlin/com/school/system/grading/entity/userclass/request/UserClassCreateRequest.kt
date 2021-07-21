@@ -5,7 +5,7 @@ package com.school.system.grading.entity.userclass.request
  * @author Muhammad Saad
  * Date: 6/7/21
  **/
-data class UserClassCreate(
+data class UserClassCreateRequest(
         var id: Int?,
         var className: String?
 )
